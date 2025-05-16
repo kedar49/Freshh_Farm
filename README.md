@@ -1,4 +1,4 @@
-# Freshh Farm - Production Ready E-commerce Platform
+# Freshh Farm - 
 
 ## Overview
 Freshh Farm is a modern e-commerce platform built with the MERN stack (MongoDB, Express.js, React, Node.js) and Clerk authentication. The platform features both customer-facing e-commerce functionality and an admin dashboard for inventory and order management.
