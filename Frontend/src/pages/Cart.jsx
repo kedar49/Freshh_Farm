@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Trash2, ShoppingBag, AlertCircle, Archive, ChevronRight, Truck, ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '@clerk/clerk-react';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const Cart = () => {
   const { cartItems, products, updateCartItem, removeFromCart, getCartItemsCount, getCartAmmount } = useAppContext();
@@ -13,6 +14,7 @@ const Cart = () => {
   const [couponLoading, setCouponLoading] = useState(false);
   const navigate = useNavigate();
   const { isSignedIn } = useAuth();
+  const [error, setError] = useState(null);
   
   // Get cart items from AppContext
   const cartItemsArray = Object.entries(cartItems).map(([productId, quantity]) => {
@@ -32,10 +34,16 @@ const Cart = () => {
       return;
     }
     
-    setCouponLoading(true);
-    // Coupon functionality not implemented in AppContext
-    toast.error('Coupon functionality not available');
-    setCouponLoading(false);
+    try {
+      setCouponLoading(true);
+      // Coupon functionality not implemented in AppContext
+      toast.error('Coupon functionality not available');
+    } catch (error) {
+      console.error('Error applying coupon:', error);
+      toast.error('Could not apply coupon. Please try again.');
+    } finally {
+      setCouponLoading(false);
+    }
   };
   
   // Handle quantity change
@@ -65,9 +73,23 @@ const Cart = () => {
   };
   
   if (loading) {
+    return <LoadingSpinner message="Loading your cart..." />;
+  }
+  
+  if (error) {
     return (
-      <div className="flex justify-center items-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      <div className="py-10 px-4 max-w-7xl mx-auto text-center">
+        <div className="mb-6 text-red-500">
+          <AlertCircle size={48} className="mx-auto" />
+        </div>
+        <h2 className="text-2xl font-semibold mb-3">Error Loading Cart</h2>
+        <p className="text-text-light mb-6">{error}</p>
+        <button 
+          onClick={() => window.location.reload()}
+          className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark"
+        >
+          Try Again
+        </button>
       </div>
     );
   }

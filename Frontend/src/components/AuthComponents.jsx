@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { SignIn, SignUp, UserProfile, UserButton, useAuth } from '@clerk/clerk-react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { Package } from 'lucide-react';
 
 // SignIn component with animation
 export const SignInComponent = () => {
@@ -56,6 +57,12 @@ export const UserProfileComponent = () => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
+      <div className="mb-6 max-w-7xl mx-auto">
+        <Link to="/order-history" className="flex items-center gap-2 px-4 py-2 text-primary hover:underline">
+          <Package size={18} />
+          View Order History
+        </Link>
+      </div>
       <UserProfile routing="path" path="/user-profile" />
     </motion.div>
   );

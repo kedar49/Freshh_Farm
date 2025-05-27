@@ -26,9 +26,10 @@ const ProductCard = ({ product }) => {
       {/* Image */}
       <div className="group flex items-center justify-center px-2">
         <img
-          className="group-hover:scale-105 transition-transform duration-300 ease-in-out w-32 sm:w-36 h-auto object-contain"
+          className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110"
           src={product.image?.[0] ?? assets.placeholder_image}
           alt={product.name}
+          loading="lazy"
         />
       </div>
 

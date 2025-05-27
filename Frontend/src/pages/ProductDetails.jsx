@@ -6,8 +6,9 @@ import ProductCard from "../components/ProductCard";
 import { motion } from "framer-motion";
 import { useCart } from '../context/CartContext';
 import { useAuth } from '@clerk/clerk-react';
-import { Heart, ShoppingCart, Star, Truck, ArrowLeft, Leaf } from 'lucide-react';
+import { Heart, ShoppingCart, Star, Truck, ArrowLeft, Leaf, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const ProductDetails = () => {
   const { products, navigate, addToCart } = useAppContext();
@@ -21,6 +22,7 @@ const ProductDetails = () => {
   const [quantity, setQuantity] = useState(1);
   const { addToCart: cartAddToCart } = useCart();
   const { isSignedIn, getToken } = useAuth();
+  const [error, setError] = useState(null);
 
   const productFromLocal = products.find((item) => item._id === id);
 
@@ -66,6 +68,7 @@ const ProductDetails = () => {
         fetchRelatedProducts(data.category);
       } catch (error) {
         console.error('Error fetching product:', error);
+        setError('Could not load product details');
         toast.error('Could not load product details');
       } finally {
         setLoading(false);
@@ -111,11 +114,24 @@ const ProductDetails = () => {
   
   // Handle "Add to Cart" action
   const handleAddToCart = () => {
-    cartAddToCart(
-      product._id, 
-      quantity, 
-      selectedVariant
-    );
+    try {
+      if (!isSignedIn) {
+        toast.error('Please sign in to add items to your cart');
+        navigate('/sign-in');
+        return;
+      }
+      
+      cartAddToCart(
+        product._id, 
+        quantity, 
+        selectedVariant
+      );
+      
+      toast.success(`Added ${product.name} to cart`);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      toast.error('Could not add to cart. Please try again.');
+    }
   };
   
   // Handle "Add to Wishlist" action
@@ -147,9 +163,28 @@ const ProductDetails = () => {
   };
 
   if (loading) {
+    return <LoadingSpinner message="Loading product details..." />;
+  }
+
+  if (error) {
     return (
-      <div className="flex justify-center items-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      <div className="min-h-[60vh] flex flex-col items-center justify-center">
+        <div className="text-red-500 mb-4">
+          <AlertCircle size={48} className="mx-auto" />
+        </div>
+        <h2 className="text-2xl font-semibold mb-2">Error Loading Product</h2>
+        <p className="text-text-light mb-6">{error}</p>
+        <div className="flex gap-4">
+          <button 
+            onClick={() => window.location.reload()} 
+            className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark"
+          >
+            Try Again
+          </button>
+          <Link to="/products" className="px-6 py-2 border border-primary text-primary rounded-lg hover:bg-primary-50">
+            Browse Products
+          </Link>
+        </div>
       </div>
     );
   }
@@ -186,6 +221,7 @@ const ProductDetails = () => {
               src={product.imageUrls[selectedImage]} 
               alt={product.name} 
               className="w-full h-full object-contain"
+              loading="lazy"
             />
           </div>
           

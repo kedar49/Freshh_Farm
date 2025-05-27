@@ -4,6 +4,8 @@ import { assets } from "../assets/assets";
 import { useAppContext } from "../context/AppContext";
 import { UserButtonComponent } from "./AuthComponents";
 import { useAuth } from "@clerk/clerk-react";
+import { Link } from "react-router-dom";
+import { Package } from "lucide-react";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -88,6 +90,10 @@ const Navbar = () => {
                   Clerk Dashboard
                 </NavLink>
               )}
+              <Link to="/order-history" className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                <Package size={16} />
+                Order History
+              </Link>
               <UserButtonComponent />
             </div>
           ) : (
@@ -172,6 +178,10 @@ const Navbar = () => {
             </NavLink>
           ) : (
             <div className="mt-2">
+              <Link to="/order-history" className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                <Package size={16} />
+                Order History
+              </Link>
               <UserButtonComponent />
             </div>
           )}
