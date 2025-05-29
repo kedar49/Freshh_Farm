@@ -4,20 +4,20 @@ import ProductCard from "../components/ProductCard";
 import { motion } from "framer-motion";
 
 const AllProduct = () => {
-  const { products, searchQuary } = useAppContext();
+  const { products, searchQuery } = useAppContext();
   const [filteredProduct, setFilterdProduct] = useState([]);
 
   useEffect(() => {
-    if (searchQuary.length > 0) {
+    if (searchQuery && searchQuery.length > 0) {
       setFilterdProduct(
-        products.filter((product) =>
-          product.name.toLowerCase().includes(searchQuary.toLowerCase())
-        )
+        products?.filter((product) =>
+          product.name.toLowerCase().includes(searchQuery.toLowerCase())
+        ) || []
       );
     } else {
-      setFilterdProduct(products);
+      setFilterdProduct(products || []);
     }
-  }, [products, searchQuary]);
+  }, [products, searchQuery]);
 
   // Variants for the product card
   const cardVariants = {

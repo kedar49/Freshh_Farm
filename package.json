@@ -1,0 +1,55 @@
+{
+  "name": "freshh-farm",
+  "version": "1.0.0",
+  "description": "Freshh Farm - Complete E-commerce Platform for Fresh Fruits & Vegetables",
+  "private": true,
+  "workspaces": [
+    "Frontend",
+    "Backend"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "cd Frontend && npm run dev",
+    "dev:backend": "cd Backend && npm run dev",
+    "build": "npm run build:frontend",
+    "build:frontend": "cd Frontend && npm run build",
+    "build:backend": "cd Backend && npm run build",
+    "start": "npm run start:frontend",
+    "start:frontend": "cd Frontend && npm run start",
+    "start:backend": "cd Backend && npm start",
+    "install:all": "npm install && cd Frontend && npm install && cd ../Backend && npm install",
+    "clean": "rm -rf node_modules Frontend/node_modules Backend/node_modules Frontend/dist",
+    "lint": "npm run lint:frontend",
+    "lint:frontend": "cd Frontend && npm run lint",
+    "test": "echo 'Testing setup coming soon'",
+    "vercel-build": "cd Frontend && npm run build"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "keywords": [
+    "e-commerce",
+    "fruits",
+    "vegetables",
+    "fresh-farm",
+    "organic",
+    "grocery",
+    "react",
+    "nodejs",
+    "mongodb"
+  ],
+  "author": "Freshh Farm Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kedar49/Freshh_Farm.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kedar49/Freshh_Farm/issues"
+  },
+  "homepage": "https://freshh-farm.vercel.app"
+} 

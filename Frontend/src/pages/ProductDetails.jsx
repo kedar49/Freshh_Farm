@@ -36,8 +36,8 @@ const ProductDetails = () => {
   }, [products, id]);
 
   useEffect(() => {
-    if (product && product.image?.length > 0) {
-      setThumbnail(product.image[0]);
+    if (product && product.imageUrls?.length > 0) {
+      setThumbnail(product.imageUrls[0]);
     }
   }, [product]);
 

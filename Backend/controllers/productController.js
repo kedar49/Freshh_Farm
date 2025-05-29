@@ -62,17 +62,17 @@ export const getProductById = async (req, res) => {
   }
 };
 
-// Create new product - clerks only
+// Create new product - sellers/admins only
 export const createProduct = async (req, res) => {
   try {
     const userId = req.auth.userId; // From Clerk middleware
     
-    // Check if user is a clerk
+    // Check if user is a seller or admin
     const user = await User.findOne({ clerkId: userId });
-    if (!user || (user.role !== 'clerk' && user.role !== 'admin')) {
+    if (!user || (user.role !== 'seller' && user.role !== 'admin')) {
       return res.status(403).json({ 
         success: false, 
-        message: 'Unauthorized: Clerk access required' 
+        message: 'Unauthorized: Seller access required' 
       });
     }
     
@@ -82,7 +82,7 @@ export const createProduct = async (req, res) => {
       originalPrice, 
       offerPrice, 
       category, 
-      imageUrl, 
+      imageUrls, 
       inStock, 
       unit 
     } = req.body;
@@ -94,7 +94,7 @@ export const createProduct = async (req, res) => {
       originalPrice,
       offerPrice,
       category,
-      imageUrl,
+      imageUrls,
       inStock,
       unit
     });
@@ -116,18 +116,18 @@ export const createProduct = async (req, res) => {
   }
 };
 
-// Update product - clerks only
+// Update product - sellers/admins only
 export const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.auth.userId; // From Clerk middleware
     
-    // Check if user is a clerk
+    // Check if user is a seller or admin
     const user = await User.findOne({ clerkId: userId });
-    if (!user || (user.role !== 'clerk' && user.role !== 'admin')) {
+    if (!user || (user.role !== 'seller' && user.role !== 'admin')) {
       return res.status(403).json({ 
         success: false, 
-        message: 'Unauthorized: Clerk access required' 
+        message: 'Unauthorized: Seller access required' 
       });
     }
     
@@ -161,18 +161,18 @@ export const updateProduct = async (req, res) => {
   }
 };
 
-// Delete product - clerks only
+// Delete product - sellers/admins only
 export const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.auth.userId; // From Clerk middleware
     
-    // Check if user is a clerk
+    // Check if user is a seller or admin
     const user = await User.findOne({ clerkId: userId });
-    if (!user || (user.role !== 'clerk' && user.role !== 'admin')) {
+    if (!user || (user.role !== 'seller' && user.role !== 'admin')) {
       return res.status(403).json({ 
         success: false, 
-        message: 'Unauthorized: Clerk access required' 
+        message: 'Unauthorized: Seller access required' 
       });
     }
     

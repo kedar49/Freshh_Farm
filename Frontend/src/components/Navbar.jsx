@@ -15,8 +15,8 @@ const Navbar = () => {
   const {
     user,
     navigate,
-    searchQuary,
-    setSearchQuary,
+    searchQuery,
+    setSearchQuery,
     getCartItemsCount,
   } = useAppContext();
   
@@ -25,10 +25,10 @@ const Navbar = () => {
   // Clerk handles logout functionality
 
   useEffect(() => {
-    if (searchQuary.length > 0) {
+    if (searchQuery && searchQuery.length > 0) {
       navigate("/products");
     }
-  }, [searchQuary]);
+  }, [searchQuery, navigate]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -56,10 +56,11 @@ const Navbar = () => {
         {/* Search */}
         <div className="flex items-center text-sm gap-2 border border-gray-300 px-3 rounded-full">
           <input
-            onChange={(e) => setSearchQuary(e.target.value)}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="py-1.5 w-full bg-transparent outline-none placeholder-gray-500"
             type="text"
             placeholder="Search products"
+            value={searchQuery || ""}
           />
           <img src={assets.search_icon} alt="search_icon" className="h-4 w-4" />
         </div>
@@ -72,7 +73,7 @@ const Navbar = () => {
           <img src={assets.nav_cart_icon} alt="cart" className="w-6" />
           
             <span className="absolute -top-2 -right-3 text-xs text-white bg-red-500 w-[18px] h-[18px] rounded-full flex items-center justify-center">
-              {getCartItemsCount() || 0}
+              {getCartItemsCount ? getCartItemsCount() || 0 : 0}
             </span>
           
         </div>
@@ -85,9 +86,9 @@ const Navbar = () => {
                 My Profile
               </NavLink>
               {/* Show clerk dashboard link for clerks and admins */}
-              {user && (user.role === 'clerk' || user.role === 'admin') && (
+              {user && (user.role === 'seller' || user.role === 'admin') && (
                 <NavLink to="/clerk-dashboard" className="text-sm bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md">
-                  Clerk Dashboard
+                  Seller Dashboard
                 </NavLink>
               )}
               <Link to="/order-history" className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
@@ -117,7 +118,7 @@ const Navbar = () => {
         >
           <img src={assets.nav_cart_icon} alt="cart" className="h-6 w-6" />
           <span className="absolute -top-2 -right-3 text-xs text-white bg-red-500 w-[18px] h-[18px] rounded-full flex items-center justify-center">
-            {getCartItemsCount() || 0}
+            {getCartItemsCount ? getCartItemsCount() || 0 : 0}
           </span>
         </div>
         <button onClick={() => setMenuOpen(!menuOpen)}>
@@ -134,10 +135,11 @@ const Navbar = () => {
           <div className="flex items-center border border-gray-300 px-3 rounded-full bg-white shadow">
             <input
               autoFocus
-              onChange={(e) => setSearchQuary(e.target.value)}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="py-2 px-3 w-full outline-none bg-transparent placeholder-gray-500 text-sm"
               type="text"
               placeholder="Search products..."
+              value={searchQuery || ""}
             />
             <img
               src={assets.search_icon}
@@ -161,10 +163,10 @@ const Navbar = () => {
             Contact
           </NavLink>
           
-          {/* Mobile clerk dashboard link */}
-          {isSignedIn && user && (user.role === 'clerk' || user.role === 'admin') && (
+          {/* Mobile seller dashboard link */}
+          {isSignedIn && user && (user.role === 'seller' || user.role === 'admin') && (
             <NavLink to="/clerk-dashboard" onClick={() => setMenuOpen(false)} className="text-green-600 font-medium">
-              Clerk Dashboard
+              Seller Dashboard
             </NavLink>
           )}
 

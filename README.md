@@ -1,205 +1,167 @@
-# Freshh Farm - 
+# Freshh Farm - E-commerce Platform
 
-## Overview
-Freshh Farm is a modern e-commerce platform built with the MERN stack (MongoDB, Express.js, React, Node.js) and Clerk authentication. The platform features both customer-facing e-commerce functionality and an admin dashboard for inventory and order management.
+A full-stack e-commerce platform for fresh fruits and vegetables built with React 19, Node.js, and MongoDB.
+
+## What It Does
+
+**For Customers:**
+- Browse and search products
+- Shopping cart with persistent storage
+- Secure checkout and order management
+- User account with order history
+
+**For Admins:**
+- Product management (add, edit, delete)
+- Order processing and tracking
+- User management with role-based access
+- Sales analytics dashboard
 
 ## Tech Stack
-- **Frontend**: React.js with Vite, Tailwind CSS, Framer Motion
-- **Backend**: Node.js, Express.js
-- **Database**: MongoDB Atlas
-- **Authentication**: Clerk
-- **Deployment**: Vercel
 
-## Project Structure
-```
-Freshh_Farm/
-├── .env                 # Root environment variables
-├── Frontend/           # React frontend application
-├── Backend/            # Express.js backend API
-└── README.md          # Project documentation
-```
+**Frontend:** React 19, Vite, TailwindCSS, Clerk Auth  
+**Backend:** Node.js, Express, MongoDB, Clerk  
+**Deployment:** Vercel
 
-## Prerequisites
-- Node.js (v16 or later)
+## Quick Setup
+
+### Prerequisites
+- Node.js 18+
 - MongoDB Atlas account
 - Clerk account
-- Vercel account (for deployment)
 
-## Environment Variables
-Create a `.env` file in the root directory with the following variables:
+### Installation
 
-```env
-# MongoDB Configuration
-MONGODB_URI=your_mongodb_connection_string
+```bash
+# Clone and install
+git clone https://github.com/kedar49/Freshh_Farm.git
+cd Freshh_Farm
+npm install
 
-# Clerk Authentication
-CLERK_SECRET_KEY=your_clerk_secret_key
-VITE_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
-
-# Server Configuration
-PORT=3000
-NODE_ENV=production
-
-# Frontend Configuration
-VITE_API_URL=your_api_url
-
-# CORS Configuration
-CORS_ORIGIN=your_frontend_domain
+# Install frontend and backend dependencies
+cd Frontend && npm install
+cd ../Backend && npm install
 ```
 
-## Installation & Setup
+### Environment Setup
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/Freshh_Farm.git
-   cd Freshh_Farm
-   ```
+**Frontend (.env):**
+```
+VITE_CLERK_PUBLISHABLE_KEY=your_clerk_key
+VITE_API_URL=http://localhost:3000
+VITE_APP_NAME=Freshh Farm
+```
 
-2. **Install dependencies**
-   ```bash
-   # Install backend dependencies
-   cd Backend
-   npm install
+**Backend (.env):**
+```
+MONGODB_URI=your_mongodb_connection_string
+CLERK_SECRET_KEY=your_clerk_secret
+PORT=3000
+NODE_ENV=development
+CORS_ORIGIN=http://localhost:5173
+```
 
-   # Install frontend dependencies
-   cd ../Frontend
-   npm install
-   ```
+### Run Development
 
-3. **Development**
-   ```bash
-   # Start backend server
-   cd Backend
-   npm run dev
+```bash
+# Start both frontend and backend
+npm run dev
 
-   # Start frontend development server
-   cd Frontend
-   npm run dev
-   ```
+# Or run separately
+npm run dev:frontend  # Port 5173
+npm run dev:backend   # Port 3000
+```
 
-## API Documentation
+## Project Structure
 
-### Authentication Endpoints
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - User login
-- `GET /api/auth/me` - Get current user
-
-### Product Endpoints
-- `GET /api/products` - Get all products
-- `GET /api/products/:id` - Get product by ID
-- `POST /api/products` - Create new product (Admin only)
-- `PUT /api/products/:id` - Update product (Admin only)
-- `DELETE /api/products/:id` - Delete product (Admin only)
-
-### Order Endpoints
-- `GET /api/orders` - Get user orders
-- `POST /api/orders` - Create new order
-- `GET /api/orders/:id` - Get order by ID
-
-### Admin Endpoints
-- `GET /api/admin/users` - Get all users (Admin only)
-- `GET /api/admin/orders` - Get all orders (Admin only)
-- `PUT /api/admin/users/:id/role` - Update user role (Admin only)
-
-## Clerk Authentication Setup
-
-1. **Create a Clerk Application**
-   - Sign up at [Clerk.dev](https://clerk.dev)
-   - Create a new application
-   - Get your API keys
-
-2. **Configure Clerk**
-   - Add your domain in Clerk Dashboard
-   - Set up OAuth providers if needed
-   - Configure email templates
-
-3. **Production Setup**
-   - Replace development keys with production keys
-   - Update allowed origins
-   - Deploy certificates
-
-## MongoDB Atlas Setup
-
-1. **Create Cluster**
-   - Sign up for [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
-   - Create a new cluster
-   - Configure network access
-
-2. **Database Setup**
-   - Create database user
-   - Get connection string
-   - Update environment variables
+```
+Freshh_Farm/
+├── Frontend/           # React app
+│   ├── src/
+│   │   ├── components/ # UI components
+│   │   ├── pages/      # Route pages
+│   │   └── context/    # State management
+│   └── package.json
+├── Backend/            # Node.js API
+│   ├── models/         # Database models
+│   ├── routes/         # API endpoints
+│   ├── controllers/    # Business logic
+│   └── server.js
+└── docs/              # Documentation
+```
 
 ## Deployment
 
-### Backend Deployment
-1. **Prepare for Production**
-   ```bash
-   cd Backend
-   npm run build
-   ```
+### Quick Deploy
+```bash
+npm install -g vercel
+vercel --prod
+```
 
-2. **Deploy to Vercel**
-   - Connect your GitHub repository
-   - Configure environment variables
-   - Set up custom domain if needed
+Set these environment variables in Vercel Dashboard:
 
-### Frontend Deployment
-1. **Build Frontend**
-   ```bash
-   cd Frontend
-   npm run build
-   ```
+**Frontend:**
+```
+VITE_CLERK_PUBLISHABLE_KEY=pk_live_your_key
+VITE_API_URL=https://your-backend.vercel.app
+```
 
-2. **Deploy to Vercel**
-   - Import your project
-   - Configure environment variables
-   - Set up custom domain
+**Backend:**
+```
+MONGODB_URI=mongodb+srv://user:pass@cluster.mongodb.net/freshhfarm
+CLERK_SECRET_KEY=sk_live_your_secret
+NODE_ENV=production
+CORS_ORIGIN=https://your-frontend.vercel.app
+```
 
-## Admin Panel Configuration
+## Key Features
 
-1. **Create Admin User**
-   - Register a new user
-   - Use MongoDB to set role as 'admin'
-   ```javascript
-   db.users.updateOne(
-     { email: 'admin@example.com' },
-     { $set: { role: 'admin' } }
-   )
-   ```
+**Security:**
+- Clerk authentication with role-based access
+- Input validation and sanitization
+- CORS protection
+- Secure environment variables
 
-2. **Access Admin Dashboard**
-   - Login with admin credentials
-   - Navigate to /clerk-dashboard
+**Performance:**
+- Code splitting and lazy loading
+- Image optimization
+- CDN delivery via Vercel
+- Responsive design
 
-## Security Considerations
-- Use environment variables for sensitive data
-- Enable CORS protection
-- Implement rate limiting
-- Use secure headers
-- Regular security audits
+## Available Scripts
 
-## Troubleshooting
+```bash
+npm run dev          # Start development servers
+npm run build        # Build for production
+npm run lint         # Code linting
+npm run install:all  # Install all dependencies
+```
 
-### Common Issues
-1. **Connection Issues**
-   - Check MongoDB connection string
-   - Verify network access settings
-   - Check CORS configuration
+## Common Issues
 
-2. **Authentication Problems**
-   - Verify Clerk API keys
-   - Check token expiration
-   - Confirm user roles
+**Build fails:** Check Node.js version (18+) and clear node_modules  
+**Environment variables not working:** Frontend vars need VITE_ prefix  
+**API not connecting:** Verify CORS_ORIGIN matches frontend URL exactly  
+**Auth not working:** Check Clerk keys and add domain to Clerk dashboard
 
-3. **Deployment Issues**
-   - Check environment variables
-   - Verify build process
-   - Review Vercel logs
+## What's Next
+
+**Planned Features:**
+- Payment integration (Stripe/Razorpay)
+- Email notifications
+- Customer reviews and ratings
+- Advanced analytics
+- Mobile app
+
 
 ## Support
-For support, please create an issue in the GitHub repository or contact the development team.
+
+- Email: support@freshhfarm.com
+- Issues: [GitHub Issues](https://github.com/yourusername/Freshh_Farm/issues)
 
 ## License
-This project is licensed under the MIT License - see the LICENSE file for details.
 
+MIT License - see [LICENSE](LICENSE) file for details.
+
+---
+
+**Made for farmers and fresh food lovers**

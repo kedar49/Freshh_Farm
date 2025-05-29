@@ -14,6 +14,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { AnimatePresence } from "framer-motion";
 import ProductDetails from "./pages/ProductDetails";
 import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
 import AddAddress from "./pages/AddAddress";
 import OrderHistory from "./pages/OrderHistory";
 import { SignInComponent, SignUpComponent, UserProfileComponent, ProtectedRoute } from "./components/AuthComponents";
@@ -40,6 +41,7 @@ const App = () => {
               <Route path="/products/:category" element={<ProductCategories />} />
               <Route path="/products/:category/:id" element={<ProductDetails />} />
               <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
+              <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
               <Route path="/add-address" element={<ProtectedRoute><AddAddress /></ProtectedRoute>} />
               <Route path="/order-history" element={<ProtectedRoute><OrderHistory /></ProtectedRoute>} />
               <Route path="/sign-in/*" element={<SignInComponent />} />

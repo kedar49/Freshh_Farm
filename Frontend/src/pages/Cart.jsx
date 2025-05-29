@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import { motion } from 'framer-motion';
-import { Trash2, ShoppingBag, AlertCircle, Archive, ChevronRight, Truck, ArrowLeft } from 'lucide-react';
+import { Trash2, ShoppingBag, AlertCircle, Archive, ChevronRight, Truck, ArrowLeft, Heart } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '@clerk/clerk-react';
 import LoadingSpinner from '../components/LoadingSpinner';
+import QuantitySelector from '../components/QuantitySelector';
 
 const Cart = () => {
   const { cartItems, products, updateCartItem, removeFromCart, getCartItemsCount, getCartAmmount } = useAppContext();
@@ -152,90 +153,65 @@ const Cart = () => {
                   </h2>
                 </div>
                 
-                <ul className="divide-y">
+                <div className="divide-y">
                   {activeItems.map((item) => (
-                    <li key={item._id} className="p-4 hover:bg-gray-50">
-                      <div className="flex items-center">
-                        <div className="w-20 h-20 flex-shrink-0 bg-gray-50 rounded-lg overflow-hidden">
+                    <motion.div
+                      key={item._id}
+                      className="flex items-center gap-4 p-4 border-b border-gray-100"
+                    >
+                      <div className="flex-shrink-0">
+                        <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden">
                           <img
-                            src={item.productId.image?.[0]}
+                            src={item.productId.imageUrls?.[0]}
                             alt={item.productId.name}
-                            className="w-full h-full object-contain"
+                            className="w-full h-full object-cover"
                           />
                         </div>
+                      </div>
+
+                      <div className="flex-1">
+                        <h3 className="font-medium text-lg mb-1">
+                          {item.productId.name}
+                        </h3>
+                        <p className="text-text-light text-sm mb-2">
+                          {item.productId.description?.substring(0, 60)}...
+                        </p>
                         
-                        <div className="ml-4 flex-1">
-                          <Link 
-                            to={`/products/${item.productId.category}/${item.productId._id}`}
-                            className="font-medium text-text-dark hover:text-primary transition-colors"
-                          >
-                            {item.productId.name}
-                          </Link>
-                          
-                          {item.variant && (
-                            <p className="text-sm text-text-light">
-                              {item.variant.size ? 
-                                `Size: ${item.variant.size}` : 
-                                `Weight: ${item.variant.weight} ${item.productId.unit}`
-                              }
-                            </p>
-                          )}
-                          
-                          <div className="mt-1 flex items-baseline">
-                            <span className="font-semibold">₹{item.productId.offerPrice}</span>
-                            {item.productId.price > item.productId.offerPrice && (
-                              <span className="ml-2 text-sm text-text-light line-through">
-                                ₹{item.productId.price}
-                              </span>
-                            )}
+                        {item.variant && (
+                          <div className="text-sm text-primary mb-2">
+                            Size: {item.variant.size} | Weight: {item.variant.weight}
                           </div>
-                          
-                          <div className="mt-2 flex flex-wrap items-center gap-3">
-                            <div className="flex items-center border border-gray-300 rounded-md">
-                              <button
-                                onClick={() => handleQuantityChange(item._id, item.quantity - 1)}
-                                className="px-2 py-1 text-text-dark hover:bg-gray-100"
-                              >
-                                -
-                              </button>
-                              <span className="px-2 py-1 min-w-[36px] text-center">
-                                {item.quantity}
-                              </span>
-                              <button
-                                onClick={() => handleQuantityChange(item._id, item.quantity + 1)}
-                                className="px-2 py-1 text-text-dark hover:bg-gray-100"
-                              >
-                                +
-                              </button>
+                        )}
+
+                        <div className="flex items-center gap-4">
+                          <div className="text-lg font-semibold text-green-600">
+                            ₹{item.productId.offerPrice}
+                          </div>
+                          {item.productId.originalPrice > item.productId.offerPrice && (
+                            <div className="text-sm text-text-light line-through">
+                              ₹{item.productId.originalPrice}
                             </div>
-                            
-                            <button
-                              onClick={() => saveForLater(item._id, true)}
-                              className="text-primary text-sm hover:underline flex items-center"
-                            >
-                              <Archive size={14} className="mr-1" />
-                              Save for later
-                            </button>
-                            
-                            <button
-                              onClick={() => removeFromCart(item._id)}
-                              className="text-error text-sm hover:underline flex items-center"
-                            >
-                              <Trash2 size={14} className="mr-1" />
-                              Remove
-                            </button>
-                          </div>
-                        </div>
-                        
-                        <div className="ml-4 text-right">
-                          <span className="font-semibold text-text-dark">
-                            ₹{(item.productId.offerPrice * item.quantity)}
-                          </span>
+                          )}
                         </div>
                       </div>
-                    </li>
+
+                      <div className="flex flex-col items-end gap-3">
+                        <QuantitySelector 
+                          quantity={item.quantity}
+                          onIncrease={() => updateCartItem(item.productId._id, item.quantity + 1)}
+                          onDecrease={() => updateCartItem(item.productId._id, item.quantity - 1)}
+                          onRemove={() => removeFromCart(item.productId._id)}
+                        />
+                        
+                        <div className="text-right">
+                          <div className="text-lg font-semibold">
+                            ₹{(item.productId.offerPrice * item.quantity).toFixed(2)}
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
                   ))}
-                </ul>
+                </div>
               </div>
             ) : (
               <div className="bg-white rounded-lg shadow-card p-6 text-center mb-6">
@@ -266,7 +242,7 @@ const Cart = () => {
                       <div className="flex items-center">
                         <div className="w-16 h-16 flex-shrink-0 bg-gray-50 rounded-lg overflow-hidden">
                           <img
-                            src={item.productId.image?.[0]}
+                            src={item.productId.imageUrls?.[0]}
                             alt={item.productId.name}
                             className="w-full h-full object-contain"
                           />

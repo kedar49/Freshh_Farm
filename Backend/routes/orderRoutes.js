@@ -1,6 +1,6 @@
 import express from 'express';
 import { ClerkExpressWithAuth } from '@clerk/clerk-sdk-node';
-import { Order } from '../models/index.js';
+import { Order, User } from '../models/index.js';
 
 const router = express.Router();
 const clerkAuth = ClerkExpressWithAuth();
@@ -8,10 +8,15 @@ const clerkAuth = ClerkExpressWithAuth();
 // Get all orders (admin only)
 router.get('/', clerkAuth, async (req, res) => {
   try {
-    const userId = req.auth.userId;
-    // Check if user has admin permissions (implement this logic)
+    const clerkId = req.auth.userId;
     
-    const orders = await Order.find().sort({ createdAt: -1 });
+    // Find user by Clerk ID and check permissions
+    const user = await User.findOne({ clerkId });
+    if (!user || (user.role !== 'admin' && user.role !== 'seller')) {
+      return res.status(403).json({ error: 'Unauthorized: Admin access required' });
+    }
+    
+    const orders = await Order.find().sort({ createdAt: -1 }).populate('items.productId');
     res.json(orders);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -21,8 +26,15 @@ router.get('/', clerkAuth, async (req, res) => {
 // Get orders for authenticated user
 router.get('/my-orders', clerkAuth, async (req, res) => {
   try {
-    const userId = req.auth.userId;
-    const orders = await Order.find({ userId }).sort({ createdAt: -1 });
+    const clerkId = req.auth.userId;
+    
+    // Find user by Clerk ID
+    const user = await User.findOne({ clerkId });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    const orders = await Order.find({ userId: user._id }).sort({ createdAt: -1 }).populate('items.productId');
     res.json(orders);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -33,7 +45,13 @@ router.get('/my-orders', clerkAuth, async (req, res) => {
 router.get('/:orderId', clerkAuth, async (req, res) => {
   try {
     const { orderId } = req.params;
-    const userId = req.auth.userId;
+    const clerkId = req.auth.userId;
+    
+    // Find user by Clerk ID
+    const user = await User.findOne({ clerkId });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
     
     const order = await Order.findById(orderId).populate('items.productId');
     
@@ -42,7 +60,9 @@ router.get('/:orderId', clerkAuth, async (req, res) => {
     }
     
     // Check if the order belongs to the user or the user is an admin
-    // Implement this logic
+    if (order.userId.toString() !== user._id.toString() && user.role !== 'admin' && user.role !== 'seller') {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
     
     res.json(order);
   } catch (error) {
@@ -53,8 +73,14 @@ router.get('/:orderId', clerkAuth, async (req, res) => {
 // Create new order
 router.post('/', clerkAuth, async (req, res) => {
   try {
-    const userId = req.auth.userId;
+    const clerkId = req.auth.userId;
     const orderData = req.body;
+    
+    // Find user by Clerk ID
+    const user = await User.findOne({ clerkId });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
     
     // Validate minimum order value of ₹50
     if (orderData.totalAmount < 50) {
@@ -62,7 +88,7 @@ router.post('/', clerkAuth, async (req, res) => {
     }
     
     const newOrder = new Order({
-      userId,
+      userId: user._id,
       ...orderData
     });
     
@@ -81,8 +107,13 @@ router.patch('/:orderId/status', clerkAuth, async (req, res) => {
   try {
     const { orderId } = req.params;
     const { status } = req.body;
+    const clerkId = req.auth.userId;
     
-    // Check if user has admin permissions (implement this logic)
+    // Find user by Clerk ID and check permissions
+    const user = await User.findOne({ clerkId });
+    if (!user || (user.role !== 'admin' && user.role !== 'seller')) {
+      return res.status(403).json({ error: 'Unauthorized: Admin access required' });
+    }
     
     const order = await Order.findByIdAndUpdate(
       orderId,
@@ -104,7 +135,13 @@ router.patch('/:orderId/status', clerkAuth, async (req, res) => {
 router.patch('/:orderId/cancel', clerkAuth, async (req, res) => {
   try {
     const { orderId } = req.params;
-    const userId = req.auth.userId;
+    const clerkId = req.auth.userId;
+    
+    // Find user by Clerk ID
+    const user = await User.findOne({ clerkId });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
     
     const order = await Order.findById(orderId);
     
@@ -113,7 +150,7 @@ router.patch('/:orderId/cancel', clerkAuth, async (req, res) => {
     }
     
     // Check if the order belongs to the user
-    if (order.userId.toString() !== userId) {
+    if (order.userId.toString() !== user._id.toString()) {
       return res.status(403).json({ error: 'Unauthorized' });
     }
     

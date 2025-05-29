@@ -75,7 +75,7 @@ router.post('/items', clerkAuth, async (req, res) => {
     await cart.save();
     
     // Return populated cart
-    cart = await Cart.findOne({ userId }).populate('items.productId');
+    cart = await Cart.findOne({ userId: user._id }).populate('items.productId');
     
     res.json(cart);
   } catch (error) {
@@ -121,7 +121,7 @@ router.put('/items/:itemId', clerkAuth, async (req, res) => {
     await cart.save();
     
     // Return populated cart
-    const updatedCart = await Cart.findOne({ userId }).populate('items.productId');
+    const updatedCart = await Cart.findOne({ userId: user._id }).populate('items.productId');
     
     res.json(updatedCart);
   } catch (error) {

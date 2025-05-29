@@ -1,13 +1,15 @@
 {
-  "name": "frontend",
+  "name": "freshh-farm-frontend",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:production": "NODE_ENV=production vite build",
+    "start": "vite preview --port 4173"
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.31.2",
@@ -31,5 +33,9 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^15.15.0",
     "vite": "^6.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
   }
 }

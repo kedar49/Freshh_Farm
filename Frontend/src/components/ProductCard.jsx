@@ -1,6 +1,7 @@
 import React from "react";
 import { assets } from "../assets/assets";
 import { useAppContext } from "../context/AppContext";
+import { Heart } from "lucide-react";
 
 const ProductCard = ({ product }) => {
   const {
@@ -24,13 +25,16 @@ const ProductCard = ({ product }) => {
       className="border border-gray-500/20 rounded-md px-3 py-3 sm:px-4 bg-white w-full max-w-xs sm:max-w-sm mx-auto cursor-pointer"
     >
       {/* Image */}
-      <div className="group flex items-center justify-center px-2">
+      <div className="relative h-48 mb-4 rounded-lg overflow-hidden bg-gray-50">
         <img
-          className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110"
-          src={product.image?.[0] ?? assets.placeholder_image}
+          src={product.imageUrls?.[0] ?? assets.placeholder_image}
           alt={product.name}
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           loading="lazy"
         />
+        <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <Heart size={16} className="text-gray-600 hover:text-red-500 transition-colors cursor-pointer" />
+        </div>
       </div>
 
       {/* Details */}

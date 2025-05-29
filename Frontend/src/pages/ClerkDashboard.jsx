@@ -43,40 +43,41 @@ const ClerkDashboard = () => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      // In a real app, this would be an API call to your backend
-      // const response = await fetch('http://localhost:3000/api/products');
-      // const data = await response.json();
-      // setProducts(data.products);
-      
-      // Using dummy data for now
-      setTimeout(() => {
-        setProducts([
-          { _id: '1', name: 'Organic Apples', category: 'Fruits', originalPrice: 4.99, offerPrice: 3.99, inStock: 100 },
-          { _id: '2', name: 'Fresh Carrots', category: 'Vegetables', originalPrice: 2.99, offerPrice: 1.99, inStock: 50 },
-          { _id: '3', name: 'Whole Milk', category: 'Dairy', originalPrice: 3.49, offerPrice: 3.29, inStock: 30 },
-          { _id: '4', name: 'Chicken Breast', category: 'Meat', originalPrice: 8.99, offerPrice: 7.99, inStock: 20 },
-          { _id: '5', name: 'Brown Eggs', category: 'Dairy', originalPrice: 4.99, offerPrice: 4.49, inStock: 40 },
-        ]);
-        setLoading(false);
-      }, 1000);
+      const token = await clerkUser?.getToken();
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/products`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const data = await response.json();
+      if (data.success) {
+        setProducts(data.products);
+      } else {
+        throw new Error(data.message || 'Failed to fetch products');
+      }
     } catch (error) {
       console.error('Error fetching products:', error);
       toast.error('Failed to load products');
+      setProducts([]);
+    } finally {
       setLoading(false);
     }
   };
   
   const deleteProduct = async (id) => {
     try {
-      // In a real app, this would be an API call to your backend
-      // await fetch(`http://localhost:3000/api/products/${id}`, {
-      //   method: 'DELETE',
-      //   headers: {
-      //     Authorization: `Bearer ${await getToken()}`,
-      //   },
-      // });
+      const token = await clerkUser?.getToken();
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/products/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
       
-      // For demonstration, we'll just update the state
+      if (!response.ok) {
+        throw new Error('Failed to delete product');
+      }
+      
       setProducts(products.filter(product => product._id !== id));
       toast.success('Product deleted successfully');
     } catch (error) {
