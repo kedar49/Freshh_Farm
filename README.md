@@ -155,8 +155,8 @@ npm run install:all  # Install all dependencies
 
 ## Support
 
-- Email: support@freshhfarm.com
-- Issues: [GitHub Issues](https://github.com/yourusername/Freshh_Farm/issues)
+- Email: kedarsathe49@gmail.com
+- Issues: [GitHub Issues](https://github.com/kedar49/Freshh_Farm/issues)
 
 ## License
 
